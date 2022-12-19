@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,14 +16,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', [\App\Http\Controllers\PostController::class, 'index'])->name('home');
+
+Route::get('/register', [\App\Http\Controllers\AuthController::class, 'create'])->middleware('guest');
+Route::post('/register', [\App\Http\Controllers\AuthController::class, 'store'])->middleware('guest');
+
+Route::get('/login', [\App\Http\Controllers\SessionController::class, 'create'])->middleware('guest');
+Route::post('/sessions', [\App\Http\Controllers\SessionController::class, 'store'])->middleware('guest');
+Route::post('/logout', [\App\Http\Controllers\SessionController::class, 'destroy'])->middleware('auth');
+
+
+Route::get('posts/{post:slug}', [\App\Http\Controllers\PostController::class, 'show']);
+
+Route::get('categories/{category:slug}', function (Category $category) {
     return view('posts', [
-        "posts" => Post::all()
+        'posts' => $category->posts->load(['author', 'category']),
+        "currentCategory" => $category,
+        "categories" => Category::all()
     ]);
 });
 
-Route::get('/posts/{post}', function ($slug) {
-    return view('post', [
-        'post' => Post::findOrFail($slug)
+Route::get('authors/{author}', function (User $author) {
+    return view('posts', [
+        'posts' => $author->posts->load(['author', 'category']),
+        "categories" => Category::all()
     ]);
 });

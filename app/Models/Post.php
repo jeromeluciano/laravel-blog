@@ -2,42 +2,44 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\File;
-use Spatie\YamlFrontMatter\YamlFrontMatter;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Post
+class Post extends Model
 {
-    public function __construct(public $title, public $slug, public $excerpt, public $body, public $date)
+    use HasFactory;
+
+    public function category()
     {
+        return $this->belongsTo(Category::class);
     }
 
-    public static function all()
+    public function author()
     {
-        return collect(File::files(resource_path("posts")))
-            ->map(fn($file) => YamlFrontMatter::parseFile($file))
-            ->map(fn($document) => new Post(
-                $document->title,
-                $document->slug,
-                $document->excerpt,
-                $document->body(),
-                $document->date
-            ));
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public static function find(string $slug)
+    public function scopeFilter($query, array $filters)
     {
-       return static::all()->firstWhere('slug', $slug);
-    }
+        $query->when($filters['search'] ?? false, function ($query, $search) {
+            $query->where(fn ($query) =>
+                $query
+                    ->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('body', 'like', '%' . $search . '%')
+            );
 
-    public static function findOrFail(string $slug)
-    {
-        $post = static::find($slug);
+        });
 
-        if (! $post) {
-            throw new ModelNotFoundException();
-        }
+        $query->when($filters['category'] ?? false, function ($query, $category) {
+           $query->whereHas('category', fn ($query) =>
+                $query->where('slug', $category)
+           );
+        });
 
-        return $post;
+        $query->when($filters['author'] ?? false, function ($query, $email) {
+            $query->whereHas('author', fn ($query) =>
+                $query->where('email', $email)
+            );
+        });
     }
 }
