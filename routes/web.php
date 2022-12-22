@@ -23,8 +23,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::feeds();
+
 Route::get('/', [PostController::class, 'index'])->name('home');
-Route::get('posts/{post:slug}', [PostController::class, 'show']);
+Route::get('posts/{post:slug}', [PostController::class, 'show'])->name('posts.show');
 
 Route::post('/newsletter', NewsletterController::class);
 
