@@ -65,4 +65,10 @@ class Post extends Model
     {
         return route('posts.show', $this->slug);
     }
+
+    public function incrementViews()
+    {
+        $this->views++;
+        $this->save();
+    }
 }

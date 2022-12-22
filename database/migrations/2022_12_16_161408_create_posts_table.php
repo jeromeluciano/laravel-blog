@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('excerpt');
             $table->text('body');
+            $table->bigInteger('views')->default(0);
             $table->timestamps();
             $table->timestamp('published_at')->nullable();
         });

@@ -12,6 +12,7 @@ class PostController extends Controller
     //
     public function index()
     {
+
         return view('posts.index', [
             "posts" => Post::query()
                 ->latest()
@@ -23,12 +24,12 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
+        // increment view count before loading the view
+        $post->incrementViews();
+
         return view('posts.show', [
             'post' => $post,
             'comments' => $post->load(['comments'])->comments
         ]);
     }
-
-
-
 }
