@@ -83,9 +83,9 @@ class AdminPostController extends Controller
         if ($attributes['status'] ?? false) {
             if ($attributes['status'] == Post::PUBLISHED) {
                 $attributes['published_at'] = now();
-            } else {
-                $attributes['published_at'] = null;
             }
+        } else {
+            $attributes['published_at'] = null;
         }
 
         // remove status attribute in the request data
@@ -93,5 +93,4 @@ class AdminPostController extends Controller
             return $key !== "status";
         }, ARRAY_FILTER_USE_KEY);
     }
-
 }
