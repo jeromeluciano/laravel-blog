@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PostController extends Controller
 {
@@ -16,15 +17,18 @@ class PostController extends Controller
                 ->latest()
                 ->filter(request(['search', 'category', 'author']))
                 ->paginate(6)
-                ->withQueryString()
+                ->withQueryString(),
         ]);
     }
 
     public function show(Post $post)
     {
         return view('posts.show', [
-            'post' => $post
+            'post' => $post,
+            'comments' => $post->load(['comments'])->comments
         ]);
     }
+
+
 
 }
