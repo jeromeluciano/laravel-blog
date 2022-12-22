@@ -18,11 +18,30 @@
 
         <div class="mt-8 md:mt-0 flex items-center">
             @auth
-                <p>Welcome, {{ auth()->user()->name }}</p>
-                <form method="post" action="/logout" class="ml-6">
-                    @csrf
-                    <button class="text-red-600 text-sm font-semibold" type="submit">Logout</button>
-                </form>
+                <x-dropdown>
+                    <x-slot:trigger>
+                        <p class="cursor-pointer">Welcome, {{ auth()->user()->name }}</p>
+                    </x-slot:trigger>
+
+                    @admin
+                        <x-dropdown-item class="cursor-pointer " href="/admin/posts" :active="request()->is('admin/posts')">
+                            All Post
+                        </x-dropdown-item>
+                        <x-dropdown-item class="cursor-pointer " href="/admin/posts/create" :active="request()->is('admin/posts/create')">
+                            New Post
+                        </x-dropdown-item>
+                    @endadmin
+
+                    <x-dropdown-item x-data="{}" @click.prevent="$refs.logoutForm.submit()" class="cursor-pointer ">
+                        Log out
+                    </x-dropdown-item>
+
+                    <form x-ref="logoutForm" method="post" action="/logout" class="ml-6 hidden" >
+                        @csrf
+                        <button class="text-red-600 text-sm font-semibold" type="submit">Logout</button>
+                    </form>
+                </x-dropdown>
+
             @else
                 <div class="space-x-2">
                     <a href="/register" class="text-sm font-semibold uppercase">Register</a>
@@ -48,14 +67,19 @@
         <div class="mt-10">
             <div class="relative inline-block mx-auto lg:bg-gray-200 rounded-full">
 
-                <form method="POST" action="#" class="lg:flex text-sm">
+                <form method="POST" action="/newsletter" class="lg:flex text-sm">
+                    @csrf
                     <div class="lg:py-3 lg:px-5 flex items-center">
                         <label for="email" class="hidden lg:inline-block">
                             <img src="./images/mailbox-icon.svg" alt="mailbox letter">
                         </label>
 
-                        <input id="email" type="text" placeholder="Your email address"
+                        <input id="email" name="email" type="text" placeholder="Your email address"
                                class="lg:bg-transparent py-2 lg:py-0 pl-4 focus-within:outline-none">
+
+                        @error('email')
+                        <p class="text-sm text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <button type="submit"

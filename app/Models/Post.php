@@ -9,6 +9,11 @@ class Post extends Model
 {
     use HasFactory;
 
+    public const PUBLISHED = 1;
+    public const DRAFT = 0;
+
+    protected $guarded = [];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -41,5 +46,12 @@ class Post extends Model
                 $query->where('email', $email)
             );
         });
+
+        $query->whereNotNull('published_at');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }
