@@ -1,6 +1,6 @@
 <x-layout title="{{ $post->title }}">
     <article class="max-w-4xl mx-auto lg:grid lg:grid-cols-12 gap-x-10">
-        <div class="col-span-4 lg:text-center lg:pt-14 mb-10">
+        <div class="space-y-4 col-span-4 lg:text-center lg:pt-14 mb-10">
             <img src="{{ asset('storage/' . $post->thumbnail) }}" alt="" class="rounded-xl">
 
             <p class="mt-4 block text-gray-400 text-xs">
@@ -14,10 +14,30 @@
 
             <div class="flex items-center lg:justify-center text-sm mt-4">
                 <img class="rounded-xl" src="https://i.pravatar.cc/60?id={{ $post->user_id }}" alt="Lary avatar">
-                <div class="ml-3 text-left">
+                <div class="ml-3 text-center space-y-2">
                     <h5 class="font-bold">{{ $post->author->name }}</h5>
-                    <h6>Mascot at Laracasts</h6>
+                    <h6 class="text-center text-gray-700">{{ $post->author->followerCount }} Followers</h6>
                 </div>
+            </div>
+
+            <x-follow-author :author="$post->author" />
+
+            <div class="space-y-4 mt-8">
+                <h4 class="font-bold text-sm">
+                    Bookmarks
+                </h4>
+                @if ($bookmarks->count())
+                    <div class="space-y-2">
+                        @foreach ($bookmarks as $bookmark)
+                            <a class="text-sm block hover:text-blue-500 {{ $post->slug == $bookmark->slug ? 'text-blue-500' : '' }}"
+                                href="/posts/{{ $bookmark->slug }}">
+                                {{ $bookmark->title }}
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-xs">Nothing bookmarked yet.</p>
+                @endif
             </div>
         </div>
 
@@ -37,8 +57,9 @@
                     Back to Posts
                 </a>
 
-                <div class="space-x-2">
+                <div class="space-x-4 flex items-center">
                     <x-category-button :category="$post->category" />
+                    <x-bookmark-post :post="$post" :bookmarked="$bookmarked" />
                 </div>
             </div>
 

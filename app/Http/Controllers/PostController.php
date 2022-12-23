@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class PostController extends Controller
@@ -24,12 +25,16 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
+        $user = Auth::user();
+
         // increment view count before loading the view
         $post->incrementViews();
 
         return view('posts.show', [
             'post' => $post,
-            'comments' => $post->load(['comments'])->comments
+            'comments' => $post->load(['comments'])->comments,
+            'bookmarked' => $user->isBookmarked($post),
+            'bookmarks' => $user->bookmarks
         ]);
     }
 }

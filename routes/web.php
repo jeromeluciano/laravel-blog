@@ -3,6 +3,8 @@
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\AdminPostController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostCommentsController;
 use App\Http\Controllers\PostController;
@@ -43,4 +45,11 @@ Route::middleware('can:admin')->group(function () {
     Route::resource('admin/posts', AdminPostController::class)->except('show');
 
     Route::resource('admin/categories', AdminCategoryController::class);
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/follows/author/{user}', [FollowController::class, 'store']);
+    Route::delete('/follows/author/{user}', [FollowController::class, 'destroy']);
+
+    Route::post('/bookmarks/post/{post}', [BookmarkController::class, 'store']);
 });

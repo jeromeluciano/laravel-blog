@@ -71,4 +71,10 @@ class Post extends Model
         $this->views++;
         $this->save();
     }
+
+    public function bookmarkers()
+    {
+        return $this->belongsToMany(User::class, 'bookmarks', 'post_id', 'user_id')
+            ->using(Bookmark::class);
+    }
 }

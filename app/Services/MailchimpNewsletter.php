@@ -7,7 +7,9 @@ use App\Interfaces\Newsletter;
 class MailchimpNewsletter implements Newsletter
 {
 
-    public function __construct(protected \MailchimpMarketing\ApiClient $client) {}
+    public function __construct(protected \MailchimpMarketing\ApiClient $client)
+    {
+    }
     public function subscribe(string $email, $list = null)
     {
         $list ??= config('services.mailchimp.lists.subscribers');
@@ -16,5 +18,9 @@ class MailchimpNewsletter implements Newsletter
             'email_address' => $email,
             'status' => 'subscribed'
         ]);
+    }
+
+    public function notifySubscribers()
+    {
     }
 }
