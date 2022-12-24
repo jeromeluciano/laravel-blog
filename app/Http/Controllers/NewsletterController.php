@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Interfaces\Newsletter;
 use App\Services\MailchimpNewsletter;
-use Illuminate\Http\Request;
 
 class NewsletterController extends Controller
 {

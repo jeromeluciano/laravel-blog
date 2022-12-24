@@ -9,9 +9,6 @@ use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PostCommentsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SessionController;
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*

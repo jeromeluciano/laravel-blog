@@ -63,7 +63,7 @@ class Post extends Model
 
     public function link()
     {
-        return route('posts.show', $this->slug);
+        return to_route('posts.show', $this->slug);
     }
 
     public function incrementViews()
